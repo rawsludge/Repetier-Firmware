@@ -29,6 +29,11 @@ float Printer::axisStepsPerMM[E_AXIS_ARRAY] = {XAXIS_STEPS_PER_MM, YAXIS_STEPS_P
 float Printer::invAxisStepsPerMM[E_AXIS_ARRAY]; ///< Inverse of axisStepsPerMM for faster conversion
 float Printer::maxFeedrate[E_AXIS_ARRAY] = {MAX_FEEDRATE_X, MAX_FEEDRATE_Y, MAX_FEEDRATE_Z}; ///< Maximum allowed feedrate.
 float Printer::homingFeedrate[Z_AXIS_ARRAY] = {HOMING_FEEDRATE_X, HOMING_FEEDRATE_Y, HOMING_FEEDRATE_Z};
+
+float Printer::endStopXBackOnHome = ENDSTOP_X_BACK_ON_HOME;
+float Printer::endStopYBackOnHome = ENDSTOP_Y_BACK_ON_HOME;    
+float Printer::endStopZBackOnHome = ENDSTOP_Z_BACK_ON_HOME;
+
 #if DUAL_X_RESOLUTION
 float Printer::axisX1StepsPerMM = XAXIS_STEPS_PER_MM;
 float Printer::axisX2StepsPerMM = X2AXIS_STEPS_PER_MM;
@@ -1610,10 +1615,10 @@ void Printer::homeXAxis() {
 #endif
         PrintLine::moveRelativeDistanceInSteps(axisStepsPerMM[X_AXIS] * -ENDSTOP_X_BACK_MOVE * X_HOME_DIR, 0, 0, 0, homingFeedrate[X_AXIS] / ENDSTOP_X_RETEST_REDUCTION_FACTOR, true, false);
         PrintLine::moveRelativeDistanceInSteps(axisStepsPerMM[X_AXIS] * 2 * ENDSTOP_X_BACK_MOVE * X_HOME_DIR, 0, 0, 0, homingFeedrate[X_AXIS] / ENDSTOP_X_RETEST_REDUCTION_FACTOR, true, true);
-#if defined(ENDSTOP_X_BACK_ON_HOME)
-        if(ENDSTOP_X_BACK_ON_HOME > 0)
-            PrintLine::moveRelativeDistanceInSteps(axisStepsPerMM[X_AXIS] * -ENDSTOP_X_BACK_ON_HOME * X_HOME_DIR, 0, 0, 0, homingFeedrate[X_AXIS], true, true);
-#endif
+//#if defined(ENDSTOP_X_BACK_ON_HOME)
+        if(endStopXBackOnHome != 0)
+            PrintLine::moveRelativeDistanceInSteps(axisStepsPerMM[X_AXIS] * -endStopXBackOnHome * X_HOME_DIR, 0, 0, 0, homingFeedrate[X_AXIS], true, true);
+//#endif
         currentPositionSteps[X_AXIS] = (X_HOME_DIR == -1) ? xMinSteps - offX : xMaxSteps + offX;
 #if NONLINEAR_SYSTEM
         transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
@@ -1674,10 +1679,10 @@ void Printer::homeYAxis() {
         PrintLine::moveRelativeDistanceInSteps(0, axisStepsPerMM[Y_AXIS] * -ENDSTOP_Y_BACK_MOVE * Y_HOME_DIR, 0, 0, homingFeedrate[Y_AXIS] / ENDSTOP_X_RETEST_REDUCTION_FACTOR, true, false);
         PrintLine::moveRelativeDistanceInSteps(0, axisStepsPerMM[Y_AXIS] * 2 * ENDSTOP_Y_BACK_MOVE * Y_HOME_DIR, 0, 0, homingFeedrate[Y_AXIS] / ENDSTOP_X_RETEST_REDUCTION_FACTOR, true, true);
         setHoming(false);
-#if defined(ENDSTOP_Y_BACK_ON_HOME)
-        if(ENDSTOP_Y_BACK_ON_HOME > 0)
-            PrintLine::moveRelativeDistanceInSteps(0, axisStepsPerMM[Y_AXIS] * -ENDSTOP_Y_BACK_ON_HOME * Y_HOME_DIR, 0, 0, homingFeedrate[Y_AXIS], true, false);
-#endif
+//#if defined(ENDSTOP_Y_BACK_ON_HOME)
+        if(endStopYBackOnHome != 0)
+            PrintLine::moveRelativeDistanceInSteps(0, axisStepsPerMM[Y_AXIS] * -endStopYBackOnHome * Y_HOME_DIR, 0, 0, homingFeedrate[Y_AXIS], true, false);
+//#endif
         currentPositionSteps[Y_AXIS] = (Y_HOME_DIR == -1) ? yMinSteps - offY : yMaxSteps + offY;
 #if NONLINEAR_SYSTEM
         transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
@@ -1814,11 +1819,11 @@ GCode::executeFString(PSTR(Z_PROBE_RUN_AFTER_EVERY_PROBE));
         //transformToPrinter(currentPosition[X_AXIS],currentPosition[Y_AXIS],0,xt,yt,zt);
         //zCorrection -= zt;
 #endif
-#if defined(ENDSTOP_Z_BACK_ON_HOME)
+//#if defined(ENDSTOP_Z_BACK_ON_HOME)
         // If we want to go up a bit more for some reason
-        if(ENDSTOP_Z_BACK_ON_HOME > 0)
-            zCorrection -= axisStepsPerMM[Z_AXIS] * ENDSTOP_Z_BACK_ON_HOME * Z_HOME_DIR;
-#endif
+        if(endStopZBackOnHome != 0)
+            zCorrection -= axisStepsPerMM[Z_AXIS] * endStopZBackOnHome * Z_HOME_DIR;
+//#endif
 #if Z_HOME_DIR < 0
         // Fix bed coating
 #if Z_PROBE_Z_OFFSET_MODE == 0  // Only if measure through coating e.g. inductive

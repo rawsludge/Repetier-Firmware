@@ -83,6 +83,9 @@ void EEPROM::restoreEEPROMSettingsFromConfiguration()
     Printer::homingFeedrate[Y_AXIS] = HOMING_FEEDRATE_Y;
     Printer::homingFeedrate[Z_AXIS] = HOMING_FEEDRATE_Z;
     Printer::maxJerk = MAX_JERK;
+    Printer::endStopXBackOnHome = ENDSTOP_X_BACK_ON_HOME;
+    Printer::endStopYBackOnHome = ENDSTOP_Y_BACK_ON_HOME;    
+    Printer::endStopZBackOnHome = ENDSTOP_Z_BACK_ON_HOME;	
 #if DRIVE_SYSTEM != DELTA
     Printer::maxZJerk = MAX_ZJERK;
 #endif
@@ -340,6 +343,11 @@ void EEPROM::storeDataIntoEEPROM(uint8_t corrupted)
     HAL::eprSetFloat(EPR_X_HOMING_FEEDRATE,Printer::homingFeedrate[X_AXIS]);
     HAL::eprSetFloat(EPR_Y_HOMING_FEEDRATE,Printer::homingFeedrate[Y_AXIS]);
     HAL::eprSetFloat(EPR_Z_HOMING_FEEDRATE,Printer::homingFeedrate[Z_AXIS]);
+
+    HAL::eprSetFloat(EPR_ENDSTOP_X_BACK_ON_HOME, Printer::endStopXBackOnHome);
+    HAL::eprSetFloat(EPR_ENDSTOP_Y_BACK_ON_HOME, Printer::endStopYBackOnHome);    
+    HAL::eprSetFloat(EPR_ENDSTOP_Z_BACK_ON_HOME, Printer::endStopZBackOnHome);
+
     HAL::eprSetFloat(EPR_MAX_JERK,Printer::maxJerk);
 #if DRIVE_SYSTEM != DELTA
     HAL::eprSetFloat(EPR_MAX_ZJERK,Printer::maxZJerk);
@@ -545,6 +553,11 @@ void EEPROM::readDataFromEEPROM(bool includeExtruder)
     Printer::homingFeedrate[X_AXIS] = HAL::eprGetFloat(EPR_X_HOMING_FEEDRATE);
     Printer::homingFeedrate[Y_AXIS] = HAL::eprGetFloat(EPR_Y_HOMING_FEEDRATE);
     Printer::homingFeedrate[Z_AXIS] = HAL::eprGetFloat(EPR_Z_HOMING_FEEDRATE);
+
+    Printer::endStopXBackOnHome = HAL::eprGetFloat(EPR_ENDSTOP_X_BACK_ON_HOME);
+    Printer::endStopYBackOnHome = HAL::eprGetFloat(EPR_ENDSTOP_Y_BACK_ON_HOME);    
+    Printer::endStopZBackOnHome = HAL::eprGetFloat(EPR_ENDSTOP_Z_BACK_ON_HOME);
+
     Printer::maxJerk = HAL::eprGetFloat(EPR_MAX_JERK);
 #if DRIVE_SYSTEM != DELTA
     Printer::maxZJerk = HAL::eprGetFloat(EPR_MAX_ZJERK);
@@ -1030,6 +1043,11 @@ writeFloat(EPR_X2AXIS_STEPS_PER_MM, Com::tEPRX2StepsPerMM, 4);
 #endif
     writeFloat(EPR_RETRACTION_UNDO_SPEED,Com::tEPRRetractionUndoSpeed);
 #endif
+
+    writeFloat(EPR_ENDSTOP_X_BACK_ON_HOME,Com::tEPREndStopXBackOnHHome);
+    writeFloat(EPR_ENDSTOP_Y_BACK_ON_HOME,Com::tEPREndStopYBackOnHHome);
+    writeFloat(EPR_ENDSTOP_Z_BACK_ON_HOME,Com::tEPREndStopZBackOnHHome);
+
     // now the extruder
     for(uint8_t i = 0; i < NUM_EXTRUDER; i++)
     {

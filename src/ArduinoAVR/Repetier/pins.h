@@ -398,8 +398,8 @@ STEPPER_CURRENT_CONTROL
 #define ORIG_Z_STEP_PIN         46
 #define ORIG_Z_DIR_PIN          48
 #define ORIG_Z_ENABLE_PIN       62
-#define ORIG_Z_MIN_PIN          18
-#define ORIG_Z_MAX_PIN          19
+#define ORIG_Z_MIN_PIN          19
+#define ORIG_Z_MAX_PIN          18
 
 #define ORIG_E0_STEP_PIN         26
 #define ORIG_E0_DIR_PIN          28
@@ -415,6 +415,7 @@ STEPPER_CURRENT_CONTROL
 
 #define LED_PIN            13
 #define ORIG_FAN_PIN            9
+#define ORIG_FAN2_PIN            44
 #define ORIG_PS_ON_PIN          12
 
 #define HEATER_0_PIN       10

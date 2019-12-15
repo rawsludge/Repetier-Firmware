@@ -133,6 +133,10 @@ have problems with other modules using the eeprom */
 #define EPR_PARK_Y                            1060
 #define EPR_PARK_Z                            1064
 
+#define EPR_ENDSTOP_X_BACK_ON_HOME            1068
+#define EPR_ENDSTOP_Y_BACK_ON_HOME            1072
+#define EPR_ENDSTOP_Z_BACK_ON_HOME            1076
+
 
 
 #if EEPROM_MODE != 0
